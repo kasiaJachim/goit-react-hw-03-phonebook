@@ -45,10 +45,10 @@ export class AddContacts extends Component {
     this.setState({ filter });
   };
   componentDidUpdate() {
-   localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+   localStorage.setItem('contact', JSON.stringify(this.state.contacts))
   }
   componentDidMount() {
-    this.setState({ contacts: JSON.parse(localStorage.getItem("contacts")) }); 
+    this.setState({ contact: JSON.parse(localStorage.getItem("contacts")) }); 
   }
 
   render() {
