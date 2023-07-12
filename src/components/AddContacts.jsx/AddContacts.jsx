@@ -44,6 +44,12 @@ export class AddContacts extends Component {
   filterContacts = filter => {
     this.setState({ filter });
   };
+  componentDidUpdate() {
+   localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+  }
+  componentDidMount() {
+    this.setState({ contacts: JSON.parse(localStorage.getItem("contacts")) }); 
+  }
 
   render() {
     const { contacts, filter } = this.state;
