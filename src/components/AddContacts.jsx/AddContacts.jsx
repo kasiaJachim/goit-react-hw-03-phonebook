@@ -48,7 +48,7 @@ export class AddContacts extends Component {
    localStorage.setItem('contact', JSON.stringify(this.state.contacts))
   }
   componentDidMount() {
-    this.setState({ contact: JSON.parse(localStorage.getItem("contacts")) }); 
+    this.setState({ contacts: JSON.parse(localStorage.getItem("contact")) }); 
   }
 
   render() {
