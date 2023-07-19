@@ -3,35 +3,49 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from 'components/ContactForm.jsx/ContactForm';
 import { ContactList } from 'components/ContactList.jsx/ContactList';
 import { FilterContact } from 'components/FilterContact.jsx/FilterContact';
-import contacts from 'contacts.json';
+// import contacts from 'contacts.json';
 import css from './addContacts.module.css';
 
 export class AddContacts extends Component {
   state = {
-    contacts: contacts,
+    contacts: [],
     filter: '',
-    };
-    checkContact = contact => {
-        const { name } = contact;
-        const lowerCaseName = name.toLowerCase();
-        const isNameUnique = !this.state.contacts.some(
-          existingContact => existingContact.name.toLowerCase() === lowerCaseName
-        );
-    
-        if (isNameUnique) {
-          const id = nanoid();
-          this.setState(prevState => ({
-            contacts: [...prevState.contacts, { ...contact, id }],
-          }));
-          this.setState({ name: '', number: '' });
-        } else {
-          alert(`${name} is already in contacts.`);
-        }
-      };
+  };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = contacts ? JSON.parse(contacts) : [];
+
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+  checkContact = contact => {
+    const { name } = contact;
+    const lowerCaseName = name.toLowerCase();
+    const isNameUnique = !this.state.contacts.some(
+      existingContact => existingContact.name.toLowerCase() === lowerCaseName
+    );
+
+    if (isNameUnique) {
+      const id = nanoid();
+      this.setState(prevState => ({
+        contacts: [...prevState.contacts, { ...contact, id }],
+      }));
+      this.setState({ name: '', number: '' });
+    } else {
+      alert(`${name} is already in contacts.`);
+    }
+  };
 
   addContact = newContact => {
     this.setState(prevState => ({
-      contacts: [...prevState.contacts,newContact],
+      contacts: [...prevState.contacts, newContact],
     }));
   };
   deleteContact = id => {
@@ -44,20 +58,16 @@ export class AddContacts extends Component {
   filterContacts = filter => {
     this.setState({ filter });
   };
-  componentDidUpdate() {
-   localStorage.setItem('contact', JSON.stringify(this.state.contacts))
-  }
-  componentDidMount() {
-    this.setState({ contacts: JSON.parse(localStorage.getItem("contact")) }); 
-  }
 
   render() {
     const { contacts, filter } = this.state;
-    const filteredContacts = contacts.filter(
-      contact =>
-        contact.name &&
-        contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
+    const filteredContacts = contacts
+      ? contacts.filter(
+          contact =>
+            contact.name &&
+            contact.name.toLowerCase().includes(filter.toLowerCase())
+        )
+      : [];
     return (
       <div>
         <div className={css.formContainer}>
